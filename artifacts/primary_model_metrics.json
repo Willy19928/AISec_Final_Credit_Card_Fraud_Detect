@@ -1,0 +1,20 @@
+{
+  "Model": "Primary NN - Tabular MLP",
+  "Threshold": 0.9838983416557312,
+  "Accuracy": 0.999403110845827,
+  "Precision": 0.8478260869565217,
+  "Recall": 0.7959183673469388,
+  "F1-Score": 0.8210526315789474,
+  "ROC-AUC": 0.9800210742710139,
+  "PR-AUC": 0.8267043216826518,
+  "TN": 28425,
+  "FP": 7,
+  "FN": 10,
+  "TP": 39,
+  "Training Seconds": 20.88003897666931,
+  "validation_precision": 0.8297872340425532,
+  "validation_recall": 0.7959183673469388,
+  "validation_f1": 0.8125,
+  "best_epoch": 2.0,
+  "best_validation_pr_auc": 0.7700777429924166
+}

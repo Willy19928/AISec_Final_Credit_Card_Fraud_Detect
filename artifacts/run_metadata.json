@@ -1,0 +1,82 @@
+{
+  "run_timestamp_utc": "2026-06-02T06:36:17.308176+00:00",
+  "project": "AISec Final - SDG 8 Credit Card Fraud Detection",
+  "dataset": {
+    "dataset_path": "/content/creditcard.csv",
+    "dataset_sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+    "shape": [
+      284807,
+      31
+    ],
+    "missing_values_total": 0,
+    "duplicate_rows": 1081,
+    "class_counts": {
+      "0": 284315,
+      "1": 492
+    },
+    "fraud_rate": 0.001727485630620034
+  },
+  "split_summary": {
+    "train_samples": 227845,
+    "validation_samples": 28481,
+    "test_samples": 28481,
+    "train_fraud": 394,
+    "validation_fraud": 49,
+    "test_fraud": 49,
+    "feature_count": 34,
+    "feature_columns": [
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8",
+      "V9",
+      "V10",
+      "V11",
+      "V12",
+      "V13",
+      "V14",
+      "V15",
+      "V16",
+      "V17",
+      "V18",
+      "V19",
+      "V20",
+      "V21",
+      "V22",
+      "V23",
+      "V24",
+      "V25",
+      "V26",
+      "V27",
+      "V28",
+      "Hour",
+      "Hour_sin",
+      "Hour_cos",
+      "scaled_Time",
+      "scaled_Amount",
+      "scaled_log_Amount"
+    ]
+  },
+  "environment": {
+    "python": "3.12.13",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "torch": "2.11.0+cu128",
+    "device": "cuda"
+  },
+  "primary_model": {
+    "name": "Primary NN - Tabular MLP",
+    "architecture": "FraudMLP(96-48-16)",
+    "threshold": 0.9838983416557312,
+    "artifact_path": "/content/artifacts/models/primary_mlp.pt"
+  },
+  "approval_gate": {
+    "decision": "deploy with human review",
+    "reasons": [
+      "Classroom gate passed; production use would still require live monitoring and approval."
+    ]
+  }
+}

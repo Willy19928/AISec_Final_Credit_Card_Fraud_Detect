@@ -1,0 +1,15 @@
+{
+  "dataset_path": "/content/creditcard.csv",
+  "dataset_sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+  "shape": [
+    284807,
+    31
+  ],
+  "missing_values_total": 0,
+  "duplicate_rows": 1081,
+  "class_counts": {
+    "0": 284315,
+    "1": 492
+  },
+  "fraud_rate": 0.001727485630620034
+}
