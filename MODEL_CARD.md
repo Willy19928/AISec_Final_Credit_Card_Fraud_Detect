@@ -85,3 +85,20 @@
 - Monitor input schema, amount distribution drift, fraud-rate drift, score distribution drift, review workload, and post-label precision/recall.
 - Roll back or block deployment if recall drops materially, false positives exceed review capacity, or data quality checks fail.
 - Residual risks include adaptive fraud behavior, missing demographic fairness attributes, PCA privacy limitations, and possible training-serving skew in production.
+
+## Reference Deployment
+
+- Deployment repository:
+  [Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server)
+- Required artifacts: `artifacts/models/primary_mlp.pt` and
+  `artifacts/models/preprocessing.joblib`.
+- Runtime behavior: the server recreates the notebook's feature engineering,
+  calculates a fraud probability, and uses the checkpoint's validation-selected
+  threshold.
+- Decision routing: transactions at or above the threshold are marked for human
+  review; the service does not automatically block accounts.
+- Model replacement: users may upload only a checkpoint compatible with
+  `FraudMLP(96-48-16)` and the packaged preprocessing feature order.
+- Deployment limitations: the reference server is a classroom deployment
+  implementation and does not remove the monitoring, governance, authentication,
+  rate-limiting, logging, or incident-response requirements listed above.

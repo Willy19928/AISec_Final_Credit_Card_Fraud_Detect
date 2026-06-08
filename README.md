@@ -11,6 +11,7 @@ This project builds a reproducible AI security workflow for credit card fraud de
 - `DATA_CARD.md`: dataset documentation.
 - `MODEL_CARD.md`: primary model documentation.
 - `SECURITY_PAPER.md`: final security paper.
+- `DEPLOYMENT_SERVER.md`: deployment-server integration and API overview.
 - `requirements.txt`: Python dependency list.
 
 ## Colab Result Summary
@@ -34,6 +35,24 @@ This project builds a reproducible AI security workflow for credit card fraud de
 | Isolation Forest | -0.0020 | 0.2727 | 0.3061 | 0.2885 | 0.9529 | 0.1643 | 40 | 34 | 15 |
 | Primary NN - Tabular MLP | 0.9839 | 0.8478 | 0.7959 | 0.8211 | 0.9800 | 0.8267 | 7 | 10 | 39 |
 | NN Autoencoder Anomaly Detector | 12.0521 | 0.5152 | 0.3469 | 0.4146 | 0.9615 | 0.4967 | 16 | 32 | 17 |
+
+## Deployment Server
+
+The primary MLP and its preprocessing artifact can be served through
+[Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server).
+The separate server repository provides a Flask API, browser-based fraud review
+console, compatible `.pt` model upload, batch inference, Docker deployment, and
+Azure VM instructions.
+
+The deployment service requires both:
+
+- `artifacts/models/primary_mlp.pt`
+- `artifacts/models/preprocessing.joblib`
+
+The server reproduces this notebook's feature engineering, uses the threshold
+stored in the checkpoint, and routes transactions at or above the threshold to
+human review. See `DEPLOYMENT_SERVER.md` for the integration contract and
+deployment workflow.
 
 ## Submission Notes
 

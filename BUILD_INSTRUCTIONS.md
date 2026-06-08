@@ -46,6 +46,35 @@ pip install -r requirements.txt
 - `artifacts/figures/`
 - `artifacts/models/`
 
+## Deploy The Primary Model
+
+The deployment implementation is maintained separately at
+[Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server).
+
+After running the notebook, copy these generated artifacts into the server
+repository's `models/` directory:
+
+```text
+artifacts/models/primary_mlp.pt        -> models/primary_mlp.pt
+artifacts/models/preprocessing.joblib  -> models/preprocessing.joblib
+```
+
+The checkpoint and preprocessing artifact must come from the same notebook run.
+The server validates the MLP architecture, feature-column order, threshold, and
+model parameters before loading an uploaded `.pt` checkpoint.
+
+Start the deployment server with Docker:
+
+```bash
+git clone https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server.git
+cd Credit_Card_Fraud_Detection_Server
+docker compose up -d --build
+```
+
+Open `http://localhost` for the browser review console. See
+`DEPLOYMENT_SERVER.md` for the input schema, API endpoints, and Azure VM
+deployment relationship.
+
 ## Notes
 
 - Do not rename the dataset file.
