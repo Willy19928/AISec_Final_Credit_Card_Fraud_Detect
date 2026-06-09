@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   verify-artifacts:
     runs-on: ubuntu-latest
@@ -16,3 +19,9 @@ jobs:
 
       - name: Verify artifact manifest
         run: python scripts/verify_artifact_manifest.py
+
+      - name: Verify notebook parses
+        run: python -m json.tool AISec_Final_Credit_Card_Fraud_Detection_NN_MLOps.ipynb > /dev/null
+
+      - name: Verify root and artifact cards are synchronized
+        run: python scripts/verify_document_sync.py
