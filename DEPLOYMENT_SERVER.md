@@ -131,6 +131,7 @@ Example prediction response:
   "count": 1,
   "model_version": "sha256:9b53b1504ea09ed8d8b5051d92527978ff9d3eeace7becbe9ef37ce0d7c21bae",
   "model_artifact_sha256": "ef7c96f8734926cee45d06620c24127e44f858d19a40c14717b759811ec8f73d",
+  "decision_policy": "Transactions at or above the threshold require human review.",
   "predictions": [
     {
       "index": 0,

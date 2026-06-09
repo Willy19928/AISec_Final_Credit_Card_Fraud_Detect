@@ -87,11 +87,14 @@ pip install -r requirements.txt
 
 The artifact manifest records each artifact's file size and SHA-256 hash. Text
 artifact hashes use LF-normalized bytes so verification is stable across Windows
-and Linux checkouts; binary artifact hashes use their exact bytes. Run the
-verifier after regenerating artifacts:
+and Linux checkouts; binary artifact hashes use their exact bytes. The manifest
+is a strict allowlist: any extra file under `artifacts/` that is not listed in
+`artifact_manifest.csv` fails verification. Run the verifiers after regenerating
+artifacts:
 
 ```bash
 python scripts/verify_artifact_manifest.py
+python scripts/verify_document_sync.py
 ```
 
 ## Verify The SecMLOps Reference Mapping
@@ -162,6 +165,6 @@ deployment relationship.
 - Do not rename the dataset file.
 - Do not use another dataset path.
 - The notebook reads `creditcard.csv` from the current working folder.
-- The notebook clears and regenerates `artifacts/` at the start of a full run so obsolete files are not carried into the final manifest or zip package.
+- The notebook validates `creditcard.csv` checksum and schema before clearing and regenerating `artifacts/`, so a missing or wrong dataset does not delete the previous evidence package.
 - Colab output metadata may show `/content/` paths because that is the Colab runtime directory.
 - Use PR-AUC, recall, precision, false positives, and false negatives as the main evaluation evidence. Accuracy alone is not sufficient for this imbalanced fraud task.
