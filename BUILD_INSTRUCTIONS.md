@@ -52,6 +52,7 @@ pip install -r requirements.txt
 
 - `DATA_CARD.md`
 - `MODEL_CARD.md`
+- `RESEARCH_REFERENCE.md`
 - `artifacts/metrics_summary.csv`
 - `artifacts/primary_model_metrics.json`
 - `artifacts/data_quality.json`
@@ -93,6 +94,26 @@ verifier after regenerating artifacts:
 python scripts/verify_artifact_manifest.py
 ```
 
+## Verify The SecMLOps Reference Mapping
+
+The project cites
+["SecMLOps: A comprehensive framework for integrating security throughout the
+machine learning operations lifecycle"](https://doi.org/10.1007/s10664-025-10795-y)
+as a reference paper. After a full notebook run, verify that the project
+evidence mapped to that reference remains present:
+
+- dataset checksum and schema validation run before dataset loading;
+- `run_metadata.json` and `artifact_manifest.csv` record provenance and
+  integrity evidence;
+- the generated Data Card and Model Card match their copies under `artifacts/`;
+- security stress tests and slice checks are regenerated;
+- the deployment server receives the matching checkpoint, preprocessing
+  artifact, and run metadata.
+
+`RESEARCH_REFERENCE.md` distinguishes these implemented controls from the
+reference paper's complete framework and methods that this classroom project does not
+claim to implement.
+
 ## Deploy The Primary Model
 
 The deployment implementation is maintained separately at
@@ -107,7 +128,8 @@ artifacts/models/preprocessing.joblib  -> models/preprocessing.joblib
 artifacts/run_metadata.json            -> models/run_metadata.json
 ```
 
-The checkpoint and preprocessing artifact must come from the same notebook run.
+The checkpoint, preprocessing artifact, and run metadata must come from the same
+notebook run.
 The server validates the MLP architecture, feature-column order, fitted scaler
 behavior, threshold, finite model parameters, run metadata, and artifact hashes
 at startup. After copying the files, regenerate the deployment server manifest

@@ -11,6 +11,7 @@ This project builds a reproducible AI security workflow for credit card fraud de
 - `DATA_CARD.md`: dataset documentation.
 - `MODEL_CARD.md`: primary model documentation.
 - `SECURITY_PAPER.md`: final security paper.
+- `RESEARCH_REFERENCE.md`: selected reference paper and project-method mapping.
 - `DEPLOYMENT_SERVER.md`: deployment-server integration and API overview.
 - `requirements.txt`: Python dependency list.
 
@@ -24,6 +25,23 @@ This project builds a reproducible AI security workflow for credit card fraud de
 - Primary recall: 0.7959
 - Primary precision: 0.8478
 - Approval gate: deploy with human review
+
+## Research Paper Reference
+
+For the required paper citation, this project references Zhang et al.,
+["SecMLOps: A comprehensive framework for integrating security throughout the
+machine learning operations lifecycle"](https://doi.org/10.1007/s10664-025-10795-y)
+(*Empirical Software Engineering*, 2026).
+
+The paper is used to explain and compare the project's existing MLSecOps
+practices: dataset and model provenance, Data Cards and Model Cards, SHA-256
+integrity checks, automated CI validation, input validation, controlled offline
+model deployment, limited security stress tests, and explicit
+security-performance trade-off reporting. The fraud-detection task, model
+selection, and deployment demo are not based on the paper. The project also does
+not claim to reproduce the paper's pedestrian-detection experiments or implement
+the complete SecMLOps framework. See `RESEARCH_REFERENCE.md` for the exact
+mapping and limitations.
 
 ## Model Comparison
 
@@ -44,10 +62,11 @@ The separate server repository provides a Flask API, browser-based fraud review
 console, batch inference, offline artifact replacement before startup, Docker
 deployment, and Azure VM demo instructions.
 
-The deployment service requires both:
+The deployment service requires these matching artifacts:
 
 - `artifacts/models/primary_mlp.pt`
 - `artifacts/models/preprocessing.joblib`
+- `artifacts/run_metadata.json`
 
 The server reproduces this notebook's feature engineering, uses the threshold
 stored in the checkpoint, and routes transactions at or above the threshold to

@@ -4,6 +4,36 @@
 
 This project studies credit card fraud detection as an SDG 8 problem because fraudulent financial transactions harm trustworthy economic activity and create direct loss for consumers, merchants, and financial institutions. The final workflow uses a neural-network primary classifier, a neural-network autoencoder anomaly detector, and several comparison models. The work emphasizes reproducible execution, model cards, data cards, explainability, slice reliability checks, and limited AI security stress tests.
 
+## Reference Paper and Related Method
+
+This project references Zhang et al.'s 2026 paper, "SecMLOps: A comprehensive
+framework for integrating security throughout the machine learning operations
+lifecycle," as supporting literature for the MLSecOps discussion. The paper
+presents SecMLOps as a security-first extension of MLOps based on People,
+Technology, Processes, Governance, and Compliance (PTPGC). It recommends
+lifecycle-specific threat analysis, provenance tracking, automated pipeline
+checks, layered defenses, controlled deployment, continuous monitoring, and
+explicit evaluation of the trade-off between security and operational
+performance.
+
+The paper is not the basis for the fraud-detection task, dataset, model choice,
+or deployment demo. Instead, it is used to relate the project's existing controls
+to SecMLOps concepts. Dataset checksum and schema enforcement address
+data-integrity risk before training. Run metadata, artifact SHA-256 values, an
+artifact set ID, Data Card, and Model Card provide provenance and auditable
+evidence. CI verifies committed artifacts, while the deployment service performs
+input validation, verifies model artifact hashes, rejects live model uploads,
+and reports the served artifact version. The notebook's slice checks and
+limited stress tests evaluate model behavior under several conditions rather
+than relying only on normal test accuracy.
+
+This is a contextual application, not a reproduction of the paper's pedestrian
+detection case study. The project does not implement the paper's complete PTPGC
+role structure, full STRIDE and CIAAAA analysis, data-poisoning experiment,
+FGSM or DeepFool attacks, adversarial training, CutMix, model distillation,
+continuous monitoring, or incident-response system. The precise mapping and
+scope limits are documented in `RESEARCH_REFERENCE.md`.
+
 ## Problem and SDG 8 Motivation
 
 The goal is to identify fraudulent credit card transactions while keeping unnecessary manual review low. The dataset is highly imbalanced: 492 fraud cases among 284,807 records, or 0.1727%. This makes accuracy misleading. A secure fraud model should improve detection, support human review, and avoid making ungoverned automated decisions.
@@ -84,3 +114,4 @@ The final workflow satisfies the SDG 8 fraud-detection objective with a neural-n
 
 - Credit Card Fraud Detection dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data
 - Dataset license: Database: Open Database; Contents: Database Contents
+- Zhang X, Zhao P, Jaskolka J, Li H, Lu R (2026) SecMLOps: A comprehensive framework for integrating security throughout the machine learning operations lifecycle. *Empirical Software Engineering* 31:74. https://doi.org/10.1007/s10664-025-10795-y
