@@ -8,12 +8,15 @@ MANIFEST_PATH = REPO_ROOT / "artifacts" / "artifact_manifest.csv"
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".txt"}
 
 
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+def artifact_bytes(path: Path) -> bytes:
+    raw = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        return raw.replace(b"\r\n", b"\n")
+    return raw
+
+
+def sha256_artifact(path: Path) -> str:
+    return hashlib.sha256(artifact_bytes(path)).hexdigest()
 
 
 def acceptable_sizes(path: Path) -> set[int]:
@@ -53,7 +56,7 @@ def main() -> None:
                     f"size mismatch: {relative_path} expected {expected_size}; "
                     f"acceptable checkout sizes: {actual_sizes}"
                 )
-            actual_sha256 = sha256_file(artifact_path)
+            actual_sha256 = sha256_artifact(artifact_path)
             if actual_sha256.lower() != expected_sha256:
                 failures.append(
                     f"sha256 mismatch: {relative_path} expected {expected_sha256}; "

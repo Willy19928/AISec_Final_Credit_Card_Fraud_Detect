@@ -84,8 +84,10 @@ pip install -r requirements.txt
 - `artifacts/models/primary_mlp.pt`
 - `AISec_Final_Artifacts.zip`
 
-The artifact manifest records each artifact's file size and SHA-256 hash. Run
-the verifier after regenerating artifacts:
+The artifact manifest records each artifact's file size and SHA-256 hash. Text
+artifact hashes use LF-normalized bytes so verification is stable across Windows
+and Linux checkouts; binary artifact hashes use their exact bytes. Run the
+verifier after regenerating artifacts:
 
 ```bash
 python scripts/verify_artifact_manifest.py
