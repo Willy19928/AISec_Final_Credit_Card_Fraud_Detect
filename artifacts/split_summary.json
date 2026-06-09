@@ -41,5 +41,7 @@
     "scaled_Time",
     "scaled_Amount",
     "scaled_log_Amount"
-  ]
+  ],
+  "split_strategy": "stratified random train/validation/test split",
+  "temporal_validation_performed": false
 }

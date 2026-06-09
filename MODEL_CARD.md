@@ -7,12 +7,15 @@
 - Implementation: PyTorch tabular neural network
 - Runtime environment: Python 3.12.13, PyTorch 2.11.0+cu128, device `cuda`
 - Model artifact: `artifacts/models/primary_mlp.pt`
+- Artifact set ID: `sha256:9b53b1504ea09ed8d8b5051d92527978ff9d3eeace7becbe9ef37ce0d7c21bae`
 - Intended use: fraud-risk scoring for credit card transactions with human review.
 - Prohibited use: fully automated punishment, account blocking, or production deployment without monitoring and governance approval.
 
 ## Training Data and Features
 
 - Dataset checksum: `76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89`
+- Split strategy: stratified random train/validation/test split
+- Temporal validation: not performed; this is a random holdout estimate on a two-day dataset, not a future-time deployment test.
 - Training samples: 227,845
 - Validation samples: 28,481
 - Test samples: 28,481
@@ -33,14 +36,15 @@
 ## Primary Model Decision Policy
 
 - The model outputs a fraud probability score.
-- Transactions above the selected threshold should be routed to human review.
-- The threshold balances fraud recall and manual-review burden.
+- Transactions at or above the selected threshold should be routed to human review.
+- The threshold is selected by maximizing validation F1. It is not a review-capacity, business-cost, or production workload optimization.
 - Approval gate decision: **deploy with human review**.
 - Approval reason: Classroom gate passed; production use would still require live monitoring and approval.
 
 ## Explainability Evidence
 
 - Global NN explanation: `artifacts/permutation_importance.csv` and `artifacts/figures/permutation_importance.png`.
+- Permutation importance uses 5,000 test rows: all 49 available fraud cases plus sampled normal cases. Its fraud rate is 0.9800%, so its base PR-AUC (0.9234) is not directly comparable to the original test-set PR-AUC under the original prevalence.
 - Local NN explanation: `artifacts/local_gradient_attribution.csv` and local attribution figures.
 - Top global importance features from permutation importance:
 
@@ -72,6 +76,8 @@
 
 ## Security Stress Tests
 
+These are limited classroom stress tests for PCA noise, amount mimicry, and amount-feature serving skew. They do not fully test data poisoning, model extraction, account compromise, rate-limit abuse, or all adaptive fraud strategies in the threat model.
+
 | Model | Precision | Recall | F1-Score | PR-AUC | FP | FN | TP | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Original primary MLP test set | 0.8478 | 0.7959 | 0.8211 | 0.8267 | 7 | 10 | 39 | Original final test set. |
@@ -84,22 +90,13 @@
 
 - Monitor input schema, amount distribution drift, fraud-rate drift, score distribution drift, review workload, and post-label precision/recall.
 - Roll back or block deployment if recall drops materially, false positives exceed review capacity, or data quality checks fail.
-- Residual risks include adaptive fraud behavior, missing demographic fairness attributes, PCA privacy limitations, and possible training-serving skew in production.
+- Residual risks include adaptive fraud behavior, missing demographic fairness attributes, PCA privacy limitations, possible training-serving skew in production, and the lack of temporal validation in this classroom run.
 
 ## Reference Deployment
 
-- Deployment repository:
-  [Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server)
-- Required artifacts: `artifacts/models/primary_mlp.pt` and
-  `artifacts/models/preprocessing.joblib`.
-- Runtime behavior: the server recreates the notebook's feature engineering,
-  calculates a fraud probability, and uses the checkpoint's validation-selected
-  threshold.
-- Decision routing: transactions at or above the threshold are marked for human
-  review; the service does not automatically block accounts.
-- Model replacement: update `primary_mlp.pt`, `preprocessing.joblib`, and
-  `model_manifest.json` before service startup; the deployed service does not
-  accept live model uploads.
-- Deployment limitations: the reference server is a classroom deployment
-  implementation and does not remove the monitoring, governance, authentication,
-  rate-limiting, logging, or incident-response requirements listed above.
+- Deployment repository: [Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server)
+- Required artifacts: `artifacts/models/primary_mlp.pt`, `artifacts/models/preprocessing.joblib`, and `artifacts/run_metadata.json`.
+- Runtime behavior: the server recreates the notebook's feature engineering, calculates a fraud probability, and uses the checkpoint's validation-selected threshold.
+- Decision routing: transactions at or above the threshold are marked for human review; the service does not automatically block accounts.
+- Model replacement: update `primary_mlp.pt`, `preprocessing.joblib`, `run_metadata.json`, and `model_manifest.json` before service startup; the deployed service does not accept live model uploads.
+- Deployment limitations: the reference server is a classroom deployment implementation and does not remove the monitoring, governance, authentication, rate-limiting, logging, or incident-response requirements listed above.

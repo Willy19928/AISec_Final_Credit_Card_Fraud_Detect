@@ -59,3 +59,9 @@ contract, manifest update step, and deployment workflow.
 The notebook reads only `creditcard.csv` from the same working folder. The dataset can be downloaded from the Kaggle Credit Card Fraud Detection dataset page: <https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data>.
 
 The returned Colab notebook and extracted `artifacts/` folder are the source of truth for final metrics and figures. Some artifact metadata may contain `/content/` paths because that is the Google Colab runtime directory; the notebook source itself does not depend on `/content/` or Google Drive paths.
+
+Evaluation uses a stratified random train/validation/test split on a two-day
+transaction dataset. It is suitable for this classroom comparison, but it is not
+a temporal future-time validation. The artifact manifest records file size and
+SHA-256 for each generated artifact, and the deployment samples are public
+dataset examples rather than independent evaluation evidence.

@@ -11,5 +11,6 @@
     "0": 284315,
     "1": 492
   },
-  "fraud_rate": 0.001727485630620034
+  "fraud_rate": 0.001727485630620034,
+  "checksum_status": "computed and enforced before loading the dataset"
 }

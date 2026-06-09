@@ -9,7 +9,7 @@
 - Original context: European cardholder transactions from September 2013 over a two-day period.
 - Project task: binary fraud detection for SDG 8 financial security and trustworthy economic activity.
 - Target label: `Class`, where `1` means fraudulent transaction and `0` means normal transaction.
-- Checksum from Colab run: `76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89`
+- Checksum from this run: `76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89`
 
 ## Dataset Summary
 
@@ -31,7 +31,8 @@
 ## Processing Lineage
 
 - The notebook loads one local CSV file named `creditcard.csv`.
-- The split is stratified into train, validation, and test sets.
+- The split strategy is `stratified random train/validation/test split`.
+- Temporal validation is not performed in this classroom run; future-time performance may differ from this random holdout estimate.
 - Training samples: 227,845; fraud: 394
 - Validation samples: 28,481; fraud: 49
 - Test samples: 28,481; fraud: 49
@@ -43,11 +44,11 @@
 
 - The dataset is extremely imbalanced, so PR-AUC, recall, precision, and error counts are more meaningful than accuracy alone.
 - The dataset does not include demographic attributes. Direct demographic fairness cannot be measured.
-- Amount-bin and time-window slice checks are used as proxy reliability checks, not demographic fairness claims.
+- Amount-bin and time-window slice checks are proxy reliability checks, not demographic fairness claims.
 - PCA-anonymized features reduce exposure of raw transaction attributes, but they do not guarantee complete privacy.
 
 ## Security Controls
 
-- Dataset checksum is recorded for tamper checking.
-- Data quality, split metadata, artifact manifest, and stress-test outputs are generated at runtime.
+- Dataset checksum is computed and enforced before loading the dataset. A mismatch stops the notebook before training or artifact generation.
+- Data quality, split metadata, artifact manifest, and limited stress-test outputs are generated at runtime.
 - Production use would still require access control, data retention controls, poisoning monitoring, and incident response.

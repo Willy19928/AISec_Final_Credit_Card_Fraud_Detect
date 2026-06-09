@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This project studies credit card fraud detection as an SDG 8 problem because fraudulent financial transactions harm trustworthy economic activity and create direct loss for consumers, merchants, and financial institutions. The final workflow uses a neural-network primary classifier, a neural-network autoencoder anomaly detector, and several comparison models. The work emphasizes reproducible execution, model cards, data cards, explainability, slice reliability checks, and AI security stress tests.
+This project studies credit card fraud detection as an SDG 8 problem because fraudulent financial transactions harm trustworthy economic activity and create direct loss for consumers, merchants, and financial institutions. The final workflow uses a neural-network primary classifier, a neural-network autoencoder anomaly detector, and several comparison models. The work emphasizes reproducible execution, model cards, data cards, explainability, slice reliability checks, and limited AI security stress tests.
 
 ## Problem and SDG 8 Motivation
 
@@ -12,7 +12,7 @@ The goal is to identify fraudulent credit card transactions while keeping unnece
 
 The project uses one local dataset file, `creditcard.csv`, with checksum `76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89`. The dataset source is the public ULB Machine Learning Group / Worldline credit card fraud dataset on Kaggle, licensed as `Database: Open Database; Contents: Database Contents`. It contains European cardholder transactions from September 2013 over a two-day period. The dataset has no missing values and contains 1,081 duplicate rows. Features include `Time`, `Amount`, anonymized PCA features `V1` to `V28`, and target label `Class`.
 
-Processing uses stratified train, validation, and test splits. The test set contains 28,481 transactions and 49 fraud cases. Scaling is fitted only on training data to reduce leakage risk. SMOTE is used only for classical comparison models, while the primary neural network uses imbalance-aware sampling.
+Processing uses stratified random train, validation, and test splits. The test set contains 28,481 transactions and 49 fraud cases. Scaling is fitted only on training data to reduce leakage risk. SMOTE is used only for classical comparison models, while the primary neural network uses imbalance-aware sampling. The dataset covers a two-day sequence, but this classroom run does not include temporal future-time validation, so future deployment performance may differ from the random holdout estimate.
 
 ## Model Design
 
@@ -33,7 +33,7 @@ XGBoost is the strongest comparison model in the Colab run, with PR-AUC 0.9034. 
 
 ## Explainability and Slice Reliability
 
-The project uses permutation importance for global neural-network explanation and gradient-based local attribution for selected transactions. The strongest global signal is `V14`, with importance drop 0.1124. The dataset does not contain demographic attributes, so demographic fairness cannot be measured directly. Instead, amount-bin and time-window slices are used as proxy reliability checks.
+The project uses permutation importance for global neural-network explanation and gradient-based local attribution for selected transactions. The permutation-importance subset uses 5,000 test rows: all 49 available fraud cases plus sampled normal cases. Its fraud rate is 0.98%, and its base PR-AUC is 0.9234, so it should not be compared directly with the original test-set PR-AUC under the original prevalence. The strongest global signal is `V14`, with importance drop 0.1124. The dataset does not contain demographic attributes, so demographic fairness cannot be measured directly. Instead, amount-bin and time-window slices are used as proxy reliability checks.
 
 | Slice Type | Slice | Total | Fraud Count | Flag Rate | False Positive Rate | Fraud Recall |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -52,7 +52,7 @@ The protected assets are the fraud model, transaction scoring pipeline, dataset 
 
 ## Security and Safety Tests
 
-The notebook implements three practical stress-test categories: PCA feature noise, fraud amount mimicry, and training-serving skew. PCA noise simulates small perturbations to anonymized transaction features. Fraud amount mimicry shifts true fraud amount-derived features toward low-amount behavior. Training-serving skew simulates an inference bug where amount-derived normalized features are missing.
+The notebook implements three practical stress-test categories: PCA feature noise, fraud amount mimicry, and training-serving skew. PCA noise simulates small perturbations to anonymized transaction features. Fraud amount mimicry shifts true fraud amount-derived features toward low-amount behavior. Training-serving skew simulates an inference bug where amount-derived normalized features are missing. These tests are useful classroom evidence, but they do not fully test data poisoning, model extraction, account compromise, rate-limit abuse, or every adaptive fraud strategy in the threat model.
 
 | Model | Precision | Recall | F1-Score | PR-AUC | FP | FN | TP | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -66,13 +66,13 @@ The amount mimicry test reduces primary recall from 0.7959 to 0.7755. This shows
 
 ## MLSecOps Workflow
 
-The workflow records dataset checksum, split metadata, training metrics, model files, explainability outputs, slice checks, security-test results, run metadata, and an artifact manifest. The artifact package includes model files under `artifacts/models/`, figures under `artifacts/figures/`, and structured CSV/JSON evidence for review.
+The workflow records dataset checksum, split metadata, training metrics, model files, explainability outputs, slice checks, security-test results, run metadata, and an artifact manifest with size and SHA-256 values. The artifact package includes model files under `artifacts/models/`, figures under `artifacts/figures/`, and structured CSV/JSON evidence for review. The deployment metadata includes an artifact set ID so the inference server can report which trained artifact bundle is being served.
 
 The approval gate for this Colab run is **deploy with human review**. The decision is limited to human-review deployment because production use would still require live monitoring, API controls, review capacity management, incident response, rollback plans, and retraining triggers.
 
 ## Residual Risk and Remediation
 
-Residual risks remain. Fraudsters may adapt to mimic normal behavior. PCA-anonymized features limit business interpretability and do not guarantee complete privacy. The dataset has no demographic attributes, so demographic fairness cannot be proven. A production system would need monitoring for data drift, score drift, label delay, review workload, model extraction attempts, and data poisoning.
+Residual risks remain. Fraudsters may adapt to mimic normal behavior. PCA-anonymized features limit business interpretability and do not guarantee complete privacy. The dataset has no demographic attributes, so demographic fairness cannot be proven. The evaluation uses a random holdout rather than temporal validation. A production system would need monitoring for data drift, score drift, label delay, review workload, model extraction attempts, and data poisoning.
 
 Recommended remediation includes human review for flagged transactions, rate limiting for scoring APIs, model artifact versioning, checksum validation for datasets, drift monitoring, scheduled post-label evaluation, rollback criteria, and periodic retraining when new fraud patterns appear.
 
