@@ -41,8 +41,8 @@ This project builds a reproducible AI security workflow for credit card fraud de
 The primary MLP and its preprocessing artifact can be served through
 [Willy19928/Credit_Card_Fraud_Detection_Server](https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server).
 The separate server repository provides a Flask API, browser-based fraud review
-console, compatible `.pt` model upload, batch inference, Docker deployment, and
-Azure VM instructions.
+console, batch inference, offline artifact replacement before startup, Docker
+deployment, and Azure VM demo instructions.
 
 The deployment service requires both:
 
@@ -51,8 +51,8 @@ The deployment service requires both:
 
 The server reproduces this notebook's feature engineering, uses the threshold
 stored in the checkpoint, and routes transactions at or above the threshold to
-human review. See `DEPLOYMENT_SERVER.md` for the integration contract and
-deployment workflow.
+the classroom review display. See `DEPLOYMENT_SERVER.md` for the integration
+contract, manifest update step, and deployment workflow.
 
 ## Submission Notes
 

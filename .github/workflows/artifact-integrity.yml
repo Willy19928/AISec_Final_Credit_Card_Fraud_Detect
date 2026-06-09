@@ -1,0 +1,43 @@
+name: Artifact Integrity
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify artifact manifest
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          manifest = Path("artifacts/artifact_manifest.csv")
+          if not manifest.exists():
+              raise SystemExit("artifacts/artifact_manifest.csv is missing")
+
+          failures = []
+          with manifest.open(newline="", encoding="utf-8") as handle:
+              for row in csv.DictReader(handle):
+                  artifact_path = Path(row["path"].replace("\\", "/"))
+                  expected_size = int(row["size_bytes"])
+                  if not artifact_path.exists():
+                      failures.append(f"missing: {artifact_path}")
+                      continue
+                  actual_size = artifact_path.stat().st_size
+                  if actual_size != expected_size:
+                      failures.append(
+                          f"size mismatch: {artifact_path} expected {expected_size} got {actual_size}"
+                      )
+
+          if failures:
+              raise SystemExit("\n".join(failures))
+          PY

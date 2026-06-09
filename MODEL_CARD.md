@@ -97,8 +97,9 @@
   threshold.
 - Decision routing: transactions at or above the threshold are marked for human
   review; the service does not automatically block accounts.
-- Model replacement: users may upload only a checkpoint compatible with
-  `FraudMLP(96-48-16)` and the packaged preprocessing feature order.
+- Model replacement: update `primary_mlp.pt`, `preprocessing.joblib`, and
+  `model_manifest.json` before service startup; the deployed service does not
+  accept live model uploads.
 - Deployment limitations: the reference server is a classroom deployment
   implementation and does not remove the monitoring, governance, authentication,
   rate-limiting, logging, or incident-response requirements listed above.

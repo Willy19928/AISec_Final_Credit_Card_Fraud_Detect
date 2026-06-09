@@ -15,14 +15,26 @@ This repository contains the final notebook, model evaluation artifacts, figures
 
 1. Download the dataset from Kaggle.
 2. Place `creditcard.csv` in the same folder as `AISec_Final_Credit_Card_Fraud_Detection_NN_MLOps.ipynb`.
-3. Install dependencies:
+3. Verify the dataset checksum:
+
+```powershell
+Get-FileHash .\creditcard.csv -Algorithm SHA256
+```
+
+Expected SHA-256:
+
+```text
+76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89
+```
+
+4. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Run the notebook from top to bottom.
-5. Confirm that the `artifacts/` folder is generated or updated.
+5. Run the notebook from top to bottom.
+6. Confirm that the `artifacts/` folder is generated or updated.
 
 ## Colab Setup
 
@@ -61,13 +73,23 @@ artifacts/models/preprocessing.joblib  -> models/preprocessing.joblib
 
 The checkpoint and preprocessing artifact must come from the same notebook run.
 The server validates the MLP architecture, feature-column order, threshold, and
-model parameters before loading an uploaded `.pt` checkpoint.
+model parameters at startup. After copying the files, regenerate the deployment
+server manifest so the startup hash checks match the new artifacts:
+
+```powershell
+$TrainingRepo = (Get-Location).Path
+cd ..
+git clone https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server.git
+cd Credit_Card_Fraud_Detection_Server
+
+Copy-Item "$TrainingRepo\artifacts\models\primary_mlp.pt" .\models\primary_mlp.pt -Force
+Copy-Item "$TrainingRepo\artifacts\models\preprocessing.joblib" .\models\preprocessing.joblib -Force
+python .\scripts\update_model_manifest.py
+```
 
 Start the deployment server with Docker:
 
 ```bash
-git clone https://github.com/Willy19928/Credit_Card_Fraud_Detection_Server.git
-cd Credit_Card_Fraud_Detection_Server
 docker compose up -d --build
 ```
 
